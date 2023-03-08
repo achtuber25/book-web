@@ -1,0 +1,8 @@
+.nav-item {
+    color: black;
+}
+
+.nav-item:hover {
+    color: #0080ff !important;
+    text-shadow: 13px
+}
