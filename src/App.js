@@ -4,6 +4,7 @@ import MainCmp from './cmp/MainCmp';
 import Together from './cmp/Together';
 import Feelings from './cmp/Feelings';
 import Gallery from './cmp/Gallery';
+import Firebase from './cmp/Firebase';
 
 
 import DashboardBook from './cmp/DashboardBook'
@@ -31,6 +32,7 @@ const App = () => {
             <Route path="/Together" element={<Together />} />
             <Route path="/Feelings" element={<Feelings />} />
             <Route path="/Gallery" element={<Gallery />} />
+
 
 
           </Route>

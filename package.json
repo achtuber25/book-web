@@ -37,6 +37,7 @@
     "react-dom": "^18.2.0",
     "react-file-downloader": "^1.0.4",
     "react-files-hooks": "^2.0.0",
+    "react-firebase-hooks": "^5.1.1",
     "react-heart": "^1.0.6",
     "react-icons": "^4.7.1",
     "react-images-uploading": "^3.1.7",
@@ -54,6 +55,7 @@
     "socket.io": "^4.5.3",
     "socket.io-client": "^4.5.3",
     "styled": "^1.0.0",
+    "uid": "^2.0.1",
     "video-react": "^0.15.0",
     "web-vitals": "^2.1.4"
   },

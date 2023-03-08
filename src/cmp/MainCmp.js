@@ -45,7 +45,10 @@ const MainCmp = () => {
       })
     }
   }, [])
-
+  function removeItem() {
+    localStorage.removeItem("email")
+    window.location.reload(false)
+  }
   return (
     <div>
       <nav className="navbar navbar-expand-lg justify-content-center" style={navStyle}>
@@ -89,16 +92,23 @@ const MainCmp = () => {
                   </a>
                 </li>
               }
+              {
+                localStorage.getItem("email") && <li>
+                  <a className="nav-link" style={{ color: "rgb(222 96 155)" }} onClick={removeItem} >
+                    Logout
+                  </a>
+                </li>
+              }
             </ul>
 
           </div>
         </div>
-      </nav>
+      </nav >
       <Outlet />
 
       <BottomBarMain />
 
-    </div>
+    </div >
   );
 }
 

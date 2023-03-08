@@ -2,90 +2,52 @@ import { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ReactPlayer from 'react-player'
-import io from "socket.io-client";
-
 import TogetherLogo from '../images/together.png'
 import { checkMsg } from './functions'
+import { db } from './Firebase'
+import { set, ref, onValue, remove, update } from "firebase/database";
 
 import Wrapper from './Wrapper';
 import { obj } from './config'
 
 function Together() {
+  const [msg, setMsg] = useState("")
+  const [isPlayNow, setPlayNow] = useState("")
 
-  let socket = io("http://212.ip.ply.gg:60366")
+  const [playerData, setPlayerData] = useState({
+    isPlay: "",
+    isOnline: "",
+    msg: ""
+  });
 
-  const room = "122";
-  const [isplayble, setPlayble] = useState(false);
-  const [isUrl, setUrl] = useState('');
-  const [isOnlinePartner, Setmsg] = useState('online');
-  const [send, Setsend] = useState('Send msg');
+
+  //isLogin
   if (!localStorage.getItem('email')) {
     console.log(localStorage.getItem('email'))
     window.location.href = obj.domain;
 
   }
-  console.log(localStorage.getItem('email'))
   useEffect(() => {
-    socket.on("recive-message", (data) => {
-      setPlayble(data.isplayble)
-      console.log("asas", data.isplayble, data)
-      if (data.isOnlinePartner) {
-        toast.success(data.isOnlinePartner, {
-          theme: "dark",
-          position: "top-right",
-          autoClose: 2000,
-        });
-      }
+    onValue(ref(db, `/${localStorage.getItem('pemail')}`), (snapshot) => {
+      console.log(snapshot.val())
+      setPlayNow(snapshot.val().isPlay)
     });
-  }, [socket]);
-  useEffect(() => {
-    socket.emit("join_room", room);
-    isUrlExist()
-  }, []);
-  useEffect(() => {
-    console.log(isplayble, "useeffect")
-    socket.emit("send_message", { room, isplayble });
+  }, [ref(db, `/vandna`)]);
 
-  }, [isplayble]);
-  const isUrlExist = async () => {
-    let d = await checkMsg('myFeel')
-    console.log(d)
-    if (d[0] === 'h')
-      toast.success("Wow, Theater is On", {
-        theme: "dark",
-        position: "top-right",
-        autoClose: 2000,
-      });
-    else
-      toast.warn("Sorry, Theater is off", {
-        theme: "dark",
-        position: "top-right",
-        autoClose: 2000,
-      });
-    setUrl(d)
-  };
-  const isOnline = async () => {
-    Setsend('Sending ...')
-    setTimeout(() => {
-      Setsend('Send Msg')
+  useEffect(() => {
+    update(ref(db, `/${localStorage.getItem("email")}`), playerData);
+  }, [playerData]);
 
-    }, 400);
-    socket.emit("send_message", { room, isOnlinePartner });
-    toast.info("Send Successful", {
-      theme: "dark",
-      position: "top-right",
-      autoClose: 2000,
-    });
-  };
+
   return (
     <Wrapper self="center">
-      <ReactPlayer url={isUrl} width="80vw"
+      <ReactPlayer url={"https://youtu.be/gXSlzUSQO0A"} width="80vw"
 
-        height="40vh" playing={isplayble} controls={true} style={{ placeSelf: "center", maxWidth: "600px", pointerEvents: "auto", border: "4px solid rgb(255 157 204)", borderRadius: "5px" }}
+        height="40vh" playing={playerData.isPlay} controls={true} style={{ placeSelf: "center", maxWidth: "600px", pointerEvents: "auto", border: "4px solid rgb(255 157 204)", borderRadius: "5px" }}
         onPause={() => {
-          setPlayble(false)
+          setPlayerData({ ...playerData, ...{ isPlay: false } })
         }}
-        onPlay={() => setPlayble(true)}
+        onPlay={() => setPlayerData({ ...playerData, ...{ isPlay: true } })}
       />
 
 
@@ -102,7 +64,7 @@ function Together() {
         bottom: "20vh"
       }}>
         <input className="form-control" type="text" id="text" autoComplete="off" placeholder='hi' onChange={(e) => {
-          Setmsg(e.target.value)
+          setMsg(e.target.value)
         }}
         />
         <button className="btn btn-outline-success" id="btnsearch" type="submit" style={{
@@ -112,11 +74,11 @@ function Together() {
           color: "#2e0006",
           border: "1px solid #38b6ff",
         }}
-          onClick={
-            isOnline
-          }
+          onClick={(e) => {
+            setPlayerData({ ...playerData, ...{ msg: msg } })
+          }}
         >
-          {send}
+          {"send"}
         </button></div>
       <ToastContainer style={{ marginTop: "100px", marginLeft: "30vw", width: "70vw", maxWidth: "400px" }} />
 

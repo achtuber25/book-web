@@ -10,16 +10,32 @@ import {
 import loginLogo from '../images/logo.svg'
 import Wrapper from './Wrapper';
 import { obj } from './config'
+import { set, ref } from "firebase/database";
+import { db } from './Firebase'
+
 function Login() {
   const [Sign, setSign] = useState('Sign In')
   const onSubmit = async (e) => {
     e.preventDefault()
     console.log(e.target.elements)
     setSign("Signing...")
+    let email = e.target.elements[0].value.toLowerCase().trim()
+    let password = e.target.elements[1].value.toLowerCase().trim()
+
     obj.credentials.map((user) => {
-      if (e.target.elements[0].value.trim() === user.name && user.password.includes(e.target.elements[1].value.trim())) {
-        localStorage.setItem("email", e.target.elements[0].value)
-        localStorage.setItem("password", e.target.elements[1].value)
+      if (email === user.name && user.password.includes(password)) {
+        localStorage.setItem("email", email)
+        localStorage.setItem("password", password)
+        if (email === "aditya") {
+          localStorage.setItem("pemail", "vandna")
+        } else {
+          localStorage.setItem("pemail", "aditya")
+        }
+        set(ref(db, `/${e.target.elements[0].value}`), {
+          name: e.target.elements[0].value,
+          password: e.target.elements[1].value
+        });
+
         setSign("Logged In")
         toast.success("Saved", {
           theme: "dark",
