@@ -33,8 +33,8 @@ const Settings = () => {
         localStorage.setItem('isNotification', conFom.isNotification);
         localStorage.setItem('isSaftey', conFom.isSaftey);
         localStorage.setItem('url', conFom.url);
-        if (url)
-            updateVideo(url)
+        if (conFom.url)
+            updateVideo(conFom.url)
         const items = { ...localStorage };
         await sendMsg(items, 'token')
         toast.success("Saved", {
