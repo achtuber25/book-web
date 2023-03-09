@@ -1,7 +1,7 @@
 
 const obj = {
     domain: "https://vanayaa.netlify.app/",
-    domain2: "http://localhost:3000/",
+    domain1: "http://localhost:3000/",
     credentials: [
         {
             name: "vandna",

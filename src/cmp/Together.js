@@ -43,7 +43,7 @@ function Together() {
     <Wrapper self="center">
       <ReactPlayer url={"https://youtu.be/gXSlzUSQO0A"} width="80vw"
 
-        height="40vh" playing={playerData.isPlay} controls={true} style={{ placeSelf: "center", maxWidth: "600px", pointerEvents: "auto", border: "4px solid rgb(255 157 204)", borderRadius: "5px" }}
+        height="40vh" playing={isPlayNow} controls={true} style={{ placeSelf: "center", maxWidth: "600px", pointerEvents: "auto", border: "4px solid rgb(255 157 204)", borderRadius: "5px" }}
         onPause={() => {
           setPlayerData({ ...playerData, ...{ isPlay: false } })
         }}

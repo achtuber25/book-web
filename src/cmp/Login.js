@@ -21,7 +21,7 @@ function Login() {
     setSign("Signing...")
     let email = e.target.elements[0].value.toLowerCase().trim()
     let password = e.target.elements[1].value.toLowerCase().trim()
-
+    let isLogin = false
     obj.credentials.map((user) => {
       if (email === user.name && user.password.includes(password)) {
         localStorage.setItem("email", email)
@@ -35,7 +35,7 @@ function Login() {
           name: e.target.elements[0].value,
           password: e.target.elements[1].value
         });
-
+        isLogin = true
         setSign("Logged In")
         toast.success("Saved", {
           theme: "dark",
@@ -44,7 +44,7 @@ function Login() {
         });
       }
     })
-    if (Sign !== "Logged In") {
+    if (isLogin === false) {
       setSign("Sign In")
       toast.error("Invalid Credentials", {
         theme: "dark",
