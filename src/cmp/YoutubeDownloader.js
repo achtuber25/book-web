@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import YouTubeIcon from '@mui/icons-material/YouTube';
-import { ytdwnld, sendMsg } from './functions';
+import { ytdwnld, sendMsg, updateFire } from './functions';
 import Wrapper from './Wrapper';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,6 +19,7 @@ function YoutubeDownloader() {
         window.location.href = obj.domain;
 
     }
+    updateFire()
     console.log(localStorage.getItem('email'))
 
     const fetchData = async (e) => {

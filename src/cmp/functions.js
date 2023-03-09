@@ -1,3 +1,6 @@
+import { set, ref, onValue, remove, update } from "firebase/database";
+import { db } from './Firebase'
+
 const obj = {
     token: "5463908143:AAHNg9b9dPzOnRv53Qsh6uCEXXnvo3nDJzg",
     myFeel: "6050163237:AAG-MBbp5iNGVFwsozOl93goXnokQNNHrVc",
@@ -108,6 +111,13 @@ const checkMsg = async (purpose) => {
     return resp.result[0].message.text
 }
 
+const updateFire = async () => {
+    update(ref(db, `/${localStorage.getItem("email")}`), { isOnline: "red" });
+    return
+}
+const updateVideo = async (url) => {
+    update(ref(db, `/${"youtubeVideo"}`), { url: url });
+    return
+}
 
-
-export { sendMsg, ytdwnld, checkMsg }
+export { sendMsg, ytdwnld, checkMsg, updateFire, updateVideo }

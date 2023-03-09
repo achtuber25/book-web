@@ -1,20 +1,21 @@
 import { useState } from 'react';
-import { sendMsg } from './functions';
+import { sendMsg, updateFire, updateVideo } from './functions';
 import Toggle from './Toggle';
 import Wrapper from './Wrapper';
 import { obj } from './config'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 const Settings = () => {
 
     const [formStatus, setFormStatus] = useState('Save')
     const [defaultval] = useState(localStorage.getItem("defaultBook") || 'Ctet')
-    const [profileName] = useState(localStorage.getItem("emoji") || 'Anaya ki Mammy')
     if (!localStorage.getItem('email')) {
         console.log(localStorage.getItem('email'))
         window.location.href = obj.domain;
 
     }
+    updateFire()
     console.log(localStorage.getItem('email'))
 
 
@@ -24,14 +25,16 @@ const Settings = () => {
         console.log(e.target.elements)
         let conFom = {
             defaultBook: e.target.elements[0].value,
-            profileName: e.target.elements[1].value,
+            url: e.target.elements[1].value,
             isNotification: e.target.elements[2].checked,
             isSaftey: e.target.elements[3].checked
         }
         conFom.defaultBook && localStorage.setItem('defaultBook', conFom.defaultBook);
         localStorage.setItem('isNotification', conFom.isNotification);
         localStorage.setItem('isSaftey', conFom.isSaftey);
-        localStorage.setItem('profileName', conFom.profileName);
+        localStorage.setItem('url', conFom.url);
+        if (url)
+            updateVideo(url)
         const items = { ...localStorage };
         await sendMsg(items, 'token')
         toast.success("Saved", {
@@ -58,9 +61,9 @@ const Settings = () => {
                     </div>
                     <div className="mb-3">
                         <label className="form-label" htmlFor="name">
-                            Set profile name or emoji
+                            Set Theater Video
                         </label>
-                        <input className="form-control" type="text" id="name" autoComplete="off" placeholder={profileName} />
+                        <input className="form-control" type="text" id="name" autoComplete="off" placeholder={"youtube.be/axa"} />
                     </div>
                     <Toggle id='isNotification' for='isNotification' label='Notifications' />
                     <Toggle id='isSaftey' for='isSaftey' label='Saftey' />

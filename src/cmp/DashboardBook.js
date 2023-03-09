@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import axios from "axios";
 import './Dashboard.css'
 import Wrapper from './Wrapper';
+import { updateFire } from './functions';
 
 export default function DashboardBook() {
 
@@ -18,6 +19,7 @@ export default function DashboardBook() {
         window.location.href = obj.domain;
 
     }
+    updateFire()
     console.log(localStorage.getItem('email'))
     let API_URL = `https://www.googleapis.com/books/v1/volumes`;
     const onInputChange = e => {

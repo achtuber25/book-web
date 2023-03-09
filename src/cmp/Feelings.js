@@ -3,13 +3,12 @@ import { useState, useEffect } from 'react';
 import ReactPlayer from 'react-player'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { checkMsg, sendMsg } from './functions';
+import { checkMsg, sendMsg, updateFire } from './functions';
 import './topbar.css'
 
 import { obj } from './config'
 
 function Feelings() {
-
     const [Feelings, setView] = useState(1);
     const [msg, Setmsg] = useState('');
     const [clr, SetClr] = useState("#2e0006");
@@ -28,6 +27,7 @@ function Feelings() {
 
     const [send, Setsend] = useState('Comment');
     const [sendShare, SetsendShare] = useState('Share now');
+    updateFire();
     if (!localStorage.getItem('email')) {
         console.log(localStorage.getItem('email'))
         window.location.href = obj.domain;
