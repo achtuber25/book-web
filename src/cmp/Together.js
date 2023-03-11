@@ -339,95 +339,99 @@ function Together() {
     update(ref(db, `${localStorage.getItem('email')}`), { iss: elapsedTime, duration: elapsedTime });
   }, [pduration])
   return (
-    <Container maxWidth="md">
-      <div
-        onMouseMove={handleMouseMove}
-        onMouseLeave={hanldeMouseLeave}
-        ref={playerContainerRef}
-        className={classes.playerWrapper}
-      >
-        <ReactPlayer
-          ref={playerRef}
-          width="100%"
-          height="100%"
-          url={"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"}
-          pip={pip}
-          playing={isPlayNow}
-          controls={true}
-          light={light}
-          loop={loop}
-          playbackRate={playbackRate}
-          volume={volume}
-          muted={muted}
+    <Wrapper self="center">
 
-          onPause={() => {
-            update(ref(db, `/${localStorage.getItem('email')}`), { isPlay: false });
-          }}
-          onPlay={() => {
-            update(ref(db, `/${localStorage.getItem('email')}`), { isPlay: true })
-          }}
-          onProgress={handleProgress}
-          config={{
-            file: {
-              attributes: {
-                crossorigin: "anonymous",
+      <Container maxWidth="md">
+        <div
+          onMouseMove={handleMouseMove}
+          onMouseLeave={hanldeMouseLeave}
+          ref={playerContainerRef}
+          className={classes.playerWrapper}
+        >
+          <ReactPlayer
+            ref={playerRef}
+            width="100%"
+            height="100%"
+            url={"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"}
+            pip={pip}
+            playing={isPlayNow}
+            controls={true}
+            light={light}
+            loop={loop}
+            playbackRate={playbackRate}
+            volume={volume}
+            muted={muted}
+
+            onPause={() => {
+              update(ref(db, `/${localStorage.getItem('email')}`), { isPlay: false });
+            }}
+            onPlay={() => {
+              update(ref(db, `/${localStorage.getItem('email')}`), { isPlay: true })
+            }}
+            onProgress={handleProgress}
+            config={{
+              file: {
+                attributes: {
+                  crossorigin: "anonymous",
+                },
               },
-            },
-          }}
-        />
+            }}
+          />
 
-        <Controls
-          ref={controlsRef}
-          onSeek={handleSeekChange}
-          onSeekMouseDown={handleSeekMouseDown}
-          onSeekMouseUp={handleSeekMouseUp}
-          onDuration={handleDuration}
-          onRewind={handleRewind}
-          onPlayPause={handlePlayPause}
-          onFastForward={handleFastForward}
-          playing={isPlayNow}
-          played={played}
-          elapsedTime={elapsedTime}
-          pduration={pduration}
-          totalDuration={totalDuration}
-          onMute={hanldeMute}
-          muted={muted}
-          onVolumeChange={handleVolumeChange}
-          onVolumeSeekDown={handleVolumeSeekDown}
-          onChangeDispayFormat={handleDisplayFormat}
-          playbackRate={playbackRate}
-          onPlaybackRateChange={handlePlaybackRate}
-          onToggleFullScreen={toggleFullScreen}
-          volume={volume}
-          onBookmark={addBookmark}
-          checkDuration4all={addDurantion}
-        />
-      </div>
+          <Controls
+            ref={controlsRef}
+            onSeek={handleSeekChange}
+            onSeekMouseDown={handleSeekMouseDown}
+            onSeekMouseUp={handleSeekMouseUp}
+            onDuration={handleDuration}
+            onRewind={handleRewind}
+            onPlayPause={handlePlayPause}
+            onFastForward={handleFastForward}
+            playing={isPlayNow}
+            played={played}
+            elapsedTime={elapsedTime}
+            pduration={pduration}
+            totalDuration={totalDuration}
+            onMute={hanldeMute}
+            muted={muted}
+            onVolumeChange={handleVolumeChange}
+            onVolumeSeekDown={handleVolumeSeekDown}
+            onChangeDispayFormat={handleDisplayFormat}
+            playbackRate={playbackRate}
+            onPlaybackRateChange={handlePlaybackRate}
+            onToggleFullScreen={toggleFullScreen}
+            volume={volume}
+            onBookmark={addBookmark}
+            checkDuration4all={addDurantion}
+          />
+        </div>
 
-      <Grid container style={{ marginTop: 20 }} spacing={3}>
-        {bookmarks.map((bookmark, index) => (
-          <Grid key={index} item>
-            <Paper
-              onClick={() => {
-                playerRef.current.seekTo(bookmark.time);
-                controlsRef.current.style.visibility = "visible";
+        <Grid container style={{ marginTop: 20 }} spacing={3}>
+          {bookmarks.map((bookmark, index) => (
+            <Grid key={index} item>
+              <Paper
+                onClick={() => {
+                  playerRef.current.seekTo(bookmark.time);
+                  controlsRef.current.style.visibility = "visible";
 
-                setTimeout(() => {
-                  controlsRef.current.style.visibility = "hidden";
-                }, 1000);
-              }}
-              elevation={3}
-            >
-              <img crossOrigin="anonymous" src={bookmark.image} />
-              <Typography variant="body2" align="center">
-                bookmark at {bookmark.display}
-              </Typography>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
-      <canvas ref={canvasRef} />
-    </Container>
+                  setTimeout(() => {
+                    controlsRef.current.style.visibility = "hidden";
+                  }, 1000);
+                }}
+                elevation={3}
+              >
+                <img crossOrigin="anonymous" src={bookmark.image} />
+                <Typography variant="body2" align="center">
+                  bookmark at {bookmark.display}
+                </Typography>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+        <canvas ref={canvasRef} />
+      </Container>
+    </Wrapper >
+
   );
 }
 
