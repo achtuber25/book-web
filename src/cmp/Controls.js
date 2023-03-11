@@ -319,7 +319,14 @@ const Controls = forwardRef(
             </Grid>
 
             <Grid item>
-
+              <Button
+                onClick={handleClick}
+                aria-describedby={id}
+                className={classes.bottomIcons}
+                variant="text"
+              >
+                <Typography>{playbackRate}X</Typography>
+              </Button>
 
               <Popover
                 container={ref.current}
