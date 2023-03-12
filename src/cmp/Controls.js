@@ -5,8 +5,9 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
-import FastRewindIcon from "@material-ui/icons/FastRewind";
-import FastForwardIcon from "@material-ui/icons/FastForward";
+// import FastRewindIcon from "@material-ui/icons/FastRewind";
+// import FastForwardIcon from "@material-ui/icons/FastForward";
+import SendIcon from '@mui/icons-material/Send';
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import PauseIcon from "@material-ui/icons/Pause";
 import Slider from "@material-ui/core/Slider";
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
   },
+
   controlIcons: {
     color: "#777",
 
@@ -56,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   volumeSlider: {
-    width: 100,
+    width: 80,
   },
 }));
 
@@ -124,7 +126,9 @@ const Controls = forwardRef(
       onVolumeChange,
       onBookmark,
       checkDuration4all,
-      pduration
+      pduration,
+      sendMsg,
+      chatHistory
     },
     ref
   ) => {
@@ -140,7 +144,9 @@ const Controls = forwardRef(
 
     const open = Boolean(anchorEl);
     const id = open ? "simple-popover" : undefined;
+    const [currentMsg, setTypedMsg] = useState("")
 
+    let i = 0
     return (
       <div ref={ref} className={classes.controlsWrapper}>
         <Grid
@@ -164,15 +170,15 @@ const Controls = forwardRef(
             <Grid item>
               <Button
                 onClick={onBookmark}
-                variant="contained"
                 color="primary"
                 style={{
                   position: "absolute",
-                  right: "10px"
+                  left: "10px",
+                  bottom: "150px",
+                  maxWidth: "10px",
                 }}
-                startIcon={<BookmarkIcon />}
+                startIcon={<BookmarkIcon style={{ color: "#777" }} />}
               >
-                mark
               </Button>
               <div
                 style={{
@@ -182,19 +188,19 @@ const Controls = forwardRef(
 
                 }}
               >
-                <PersonIcon style={{ color: "green" }} /><span style={{ color: "#3f51b5" }}>{elapsedTime}</span>
+                <PersonIcon style={{ color: "#38b6ff" }} /><span style={{ color: "#3f51b5" }}>{elapsedTime}</span>
               </div>
               <Button
                 onClick={checkDuration4all}
-                variant="contained"
-                color="primary"
                 style={{
                   position: "absolute",
                   left: "10px"
                 }}
-                startIcon={<TimelapseIcon />}
+                startIcon={<TimelapseIcon style={{
+                  color: "#777"
+                }} />}
               >
-                check
+                see
               </Button>
               <div
                 style={{
@@ -205,9 +211,71 @@ const Controls = forwardRef(
               >
                 <PersonIcon style={{ color: "green" }} /><span style={{ color: "#3f51b5" }}>{pduration}</span>
               </div>
+              <div
+                style={{
+                  position: "absolute",
+                  right: "10px",
+                  top: "10px",
+                  width: "25vw",
+                  height: "55vh",
+
+                }}
+              >
+                {
+                  chatHistory.slice(0).reverse().map((e) => {
+                    let styl = {
+                      position: "absolute",
+                      alignSelf: "0px",
+                      right: '0px',
+                      bottom: i.toString() + "px",
+                      color: "#38b6ff",
+
+                    }
+                    let msg = <>{e.msg}<PersonIcon /></>
+
+                    if (e.id != localStorage.getItem('email')) {
+                      styl.left = '0px'
+                      styl.color = 'green'
+                      msg = <><PersonIcon />{e.msg}</>
+                    }
+                    i += 20
+                    return <p style={styl}>{msg}</p>
+                  })}
+                <div>
+                  <input
+                    placeholder="Type here ..."
+                    value={currentMsg}
+                    style={{
+                      position: "absolute",
+                      bottom: "-25px",
+                      width: "85%",
+                      color: '#777',
+                      backgroundColor: "inherit",
+                    }}
+                    onChange={(e) => { setTypedMsg(e.target.value) }}
+                  >
+
+                  </input>
+                  <SendIcon style={{
+                    position: "absolute",
+                    right: "0px",
+                    bottom: "-23px",
+                    color: '#777',
+                    backgroundColor: "inherit",
+                  }}
+                    onClick={(() => {
+                      sendMsg({
+                        id: localStorage.getItem('email'),
+                        msg: currentMsg
+                      })
+                      setTypedMsg('')
+                    })}
+                  />
+                </div>
+              </div>
             </Grid>
           </Grid>
-          <Grid container direction="row" alignItems="center" justify="center">
+          {/* <Grid container direction="row" alignItems="center" justify="center">
             <IconButton
               onClick={onRewind}
               className={classes.controlIcons}
@@ -236,7 +304,7 @@ const Controls = forwardRef(
             >
               <FastForwardIcon fontSize="inherit" />
             </IconButton>
-          </Grid>
+          </Grid> */}
           {/* bottom controls */}
           <Grid
             container

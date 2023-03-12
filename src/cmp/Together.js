@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { findDOMNode } from "react-dom";
+import ReactDOM from "react-dom";
 
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -8,7 +8,7 @@ import Container from "@material-ui/core/Container";
 import ReactPlayer from "react-player";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Wrapper from './Wrapper';
-
+import { toast } from 'react-toastify';
 import Slider from "@material-ui/core/Slider";
 import Tooltip from "@material-ui/core/Tooltip";
 import Grid from "@material-ui/core/Grid";
@@ -17,6 +17,7 @@ import screenful from "screenfull";
 import Controls from "./Controls";
 import { db } from './Firebase'
 import { ref, onValue, update } from "firebase/database";
+import { updateFire } from './functions';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -24,11 +25,11 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
 
     position: "relative",
-    // "&:hover": {
-    //   "& $controlsWrapper": {
-    //     visibility: "visible",
-    //   },
-    // },
+    "&:hover": {
+      "& $controlsWrapper": {
+        visibility: "visible",
+      },
+    },
   },
 
   controlsWrapper: {
@@ -156,6 +157,8 @@ function Together() {
   const [isPlayNow, setPlayNow] = useState(false)
   const [pduration, setPduration] = useState('')
   const [videoUrl, setVideoUrl] = useState("")
+  const [chatHistory, setChatHistory] = useState([])
+
 
 
   const classes = useStyles();
@@ -179,6 +182,8 @@ function Together() {
   const playerContainerRef = useRef(null);
   const controlsRef = useRef(null);
   const canvasRef = useRef(null);
+  updateFire();
+
   let {
     light,
 
@@ -193,12 +198,7 @@ function Together() {
 
 
 
-  useEffect(() => {
-    onValue(ref(db, `/${localStorage.getItem('pemail')}`), (snapshot) => {
-      console.log(snapshot.val(), "effect")
-      setPlayNow(snapshot.val().isPlay)
-    });
-  }, []);
+
 
   const handlePlayPause = () => {
     setPlayNow(!isPlayNow)
@@ -328,20 +328,38 @@ function Together() {
     update(ref(db, `/${localStorage.getItem('email')}`), { duration: elapsedTime });
   };
   useEffect(() => {
+    onValue(ref(db, `/${localStorage.getItem('pemail')}`), (snapshot) => {
+      console.log(snapshot.val(), "effect")
+      setPlayNow(snapshot.val().isPlay)
+    });
     onValue(ref(db, `${localStorage.getItem('pemail')}`), (snapshot) => {
       setPduration(snapshot.val().duration)
     });
     onValue(ref(db, `/${"youtubeVideo"}`), (snapshot) => {
       setVideoUrl(snapshot.val().url)
     });
+    onValue(ref(db, `/chat`), (snapshot) => {
+      setChatHistory(snapshot.val().history)
+    });
   }, [])
   useEffect(() => {
-    update(ref(db, `${localStorage.getItem('email')}`), { iss: elapsedTime, duration: elapsedTime });
+    update(ref(db, `${localStorage.getItem('email')}`), { duration: elapsedTime });
   }, [pduration])
+
+
+  const onStart = () => {
+    toggleFullScreen()
+  }
+  const sendMsg = (msg) => {
+    setChatHistory(chatHistory.push(msg))
+    update(ref(db, `/chat`), { history: chatHistory });
+  }
+
+
   return (
     <Wrapper self="center">
 
-      <Container maxWidth="md">
+      <Container >
         <div
           onMouseMove={handleMouseMove}
           onMouseLeave={hanldeMouseLeave}
@@ -361,7 +379,6 @@ function Together() {
             playbackRate={playbackRate}
             volume={volume}
             muted={muted}
-
             onPause={() => {
               update(ref(db, `/${localStorage.getItem('email')}`), { isPlay: false });
             }}
@@ -376,8 +393,8 @@ function Together() {
                 },
               },
             }}
-          />
 
+          />
           <Controls
             ref={controlsRef}
             onSeek={handleSeekChange}
@@ -403,6 +420,8 @@ function Together() {
             volume={volume}
             onBookmark={addBookmark}
             checkDuration4all={addDurantion}
+            sendMsg={sendMsg}
+            chatHistory={chatHistory}
           />
         </div>
 
