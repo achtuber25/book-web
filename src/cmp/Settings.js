@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { sendMsg, updateFire, updateVideo } from './functions';
+import config from './config';
+
 import Toggle from './Toggle';
 import Wrapper from './Wrapper';
 import { obj } from './config'
@@ -43,7 +45,7 @@ const Settings = () => {
             autoClose: 2000,
         });
         setFormStatus('Saved')
-        window.location.href = 'https://vanayaa.netlify.app/';
+        window.location.href = config.domain;
 
     }
     return (

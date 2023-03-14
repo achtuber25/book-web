@@ -8,7 +8,7 @@ import Container from "@material-ui/core/Container";
 import ReactPlayer from "react-player";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Wrapper from './Wrapper';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import Slider from "@material-ui/core/Slider";
 import Tooltip from "@material-ui/core/Tooltip";
 import Grid from "@material-ui/core/Grid";
@@ -159,6 +159,7 @@ function Together() {
   const [videoUrl, setVideoUrl] = useState("")
   const [chatHistory, setChatHistory] = useState([])
 
+  const [isPartnerOnline, setPartnerOnline] = useState("")
 
 
   const classes = useStyles();
@@ -182,7 +183,6 @@ function Together() {
   const playerContainerRef = useRef(null);
   const controlsRef = useRef(null);
   const canvasRef = useRef(null);
-  updateFire();
 
   let {
     light,
@@ -201,7 +201,19 @@ function Together() {
 
 
   const handlePlayPause = () => {
-    setPlayNow(!isPlayNow)
+    console.log(isPartnerOnline, isPlayNow)
+    if (isPartnerOnline === 'red' && isPlayNow === false) {
+      toast.warn("Your partner is not online", {
+        theme: "dark",
+        position: "top-right",
+        autoClose: 2000,
+      });
+
+    } else {
+      setPlayNow(!isPlayNow)
+
+    }
+
   };
 
   const handleRewind = () => {
@@ -331,9 +343,8 @@ function Together() {
     onValue(ref(db, `/${localStorage.getItem('pemail')}`), (snapshot) => {
       console.log(snapshot.val(), "effect")
       setPlayNow(snapshot.val().isPlay)
-    });
-    onValue(ref(db, `${localStorage.getItem('pemail')}`), (snapshot) => {
       setPduration(snapshot.val().duration)
+      setPartnerOnline(snapshot.val().isOnline)
     });
     onValue(ref(db, `/${"youtubeVideo"}`), (snapshot) => {
       setVideoUrl(snapshot.val().url)
@@ -341,6 +352,8 @@ function Together() {
     onValue(ref(db, `/chat`), (snapshot) => {
       setChatHistory(snapshot.val().history)
     });
+
+    update(ref(db, `/${localStorage.getItem('email')}`), { isOnline: "green" });
   }, [])
   useEffect(() => {
     update(ref(db, `${localStorage.getItem('email')}`), { duration: elapsedTime });
@@ -352,7 +365,11 @@ function Together() {
   }
   const sendMsg = (msg) => {
     setChatHistory(chatHistory.push(msg))
-    update(ref(db, `/chat`), { history: chatHistory });
+    update(ref(db, `/chat`), { history: chatHistory.slice(-15) });
+  }
+  const setSliderView = () => {
+    hanldeMouseLeave()
+
   }
 
 
@@ -422,7 +439,11 @@ function Together() {
             checkDuration4all={addDurantion}
             sendMsg={sendMsg}
             chatHistory={chatHistory}
+            setSliderView={setSliderView}
+            isPartnerOnline={isPartnerOnline}
           />
+          <ToastContainer style={{ marginTop: "100px", marginLeft: "30vw", width: "70vw", maxWidth: "400px" }} />
+
         </div>
 
         <Grid container style={{ marginTop: 20 }} spacing={3}>
@@ -448,7 +469,9 @@ function Together() {
           ))}
         </Grid>
         <canvas ref={canvasRef} />
+
       </Container>
+
     </Wrapper >
 
   );

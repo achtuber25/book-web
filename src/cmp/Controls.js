@@ -20,6 +20,7 @@ import FullScreen from "@material-ui/icons/Fullscreen";
 import Popover from "@material-ui/core/Popover";
 import PersonIcon from '@mui/icons-material/Person';
 import TimelapseIcon from '@mui/icons-material/Timelapse';
+import CloseIcon from '@mui/icons-material/Close';
 const useStyles = makeStyles((theme) => ({
   controlsWrapper: {
     visibility: "hidden",
@@ -64,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 
 const PrettoSlider = withStyles({
   root: {
-    height: 8,
+    height: 2,
   },
   thumb: {
     height: 24,
@@ -128,7 +129,10 @@ const Controls = forwardRef(
       checkDuration4all,
       pduration,
       sendMsg,
-      chatHistory
+      chatHistory,
+      sliderView,
+      setSliderView,
+      isPartnerOnline
     },
     ref
   ) => {
@@ -145,6 +149,7 @@ const Controls = forwardRef(
     const open = Boolean(anchorEl);
     const id = open ? "simple-popover" : undefined;
     const [currentMsg, setTypedMsg] = useState("")
+
 
     let i = 0
     return (
@@ -173,11 +178,23 @@ const Controls = forwardRef(
                 color="primary"
                 style={{
                   position: "absolute",
-                  left: "10px",
-                  bottom: "150px",
+                  left: "0px",
+                  bottom: "120px",
                   maxWidth: "10px",
                 }}
                 startIcon={<BookmarkIcon style={{ color: "#777" }} />}
+              >
+              </Button>
+              <Button
+                onClick={setSliderView}
+                color="primary"
+                style={{
+                  position: "absolute",
+                  left: "0px",
+                  bottom: "180px",
+                  maxWidth: "10px",
+                }}
+                startIcon={<CloseIcon style={{ color: "#777" }} />}
               >
               </Button>
               <div
@@ -200,7 +217,7 @@ const Controls = forwardRef(
                   color: "#777"
                 }} />}
               >
-                see
+                <span style={{ color: "#777" }}>see</span>
               </Button>
               <div
                 style={{
@@ -209,16 +226,15 @@ const Controls = forwardRef(
                   top: "90px"
                 }}
               >
-                <PersonIcon style={{ color: "green" }} /><span style={{ color: "#3f51b5" }}>{pduration}</span>
+                <PersonIcon style={{ color: isPartnerOnline }} /><span style={{ color: "#3f51b5" }}>{pduration}</span>
               </div>
               <div
                 style={{
                   position: "absolute",
                   right: "10px",
-                  top: "10px",
-                  width: "25vw",
+                  top: "15px",
+                  width: "40vw",
                   height: "55vh",
-
                 }}
               >
                 {
@@ -238,11 +254,12 @@ const Controls = forwardRef(
                       styl.color = 'green'
                       msg = <><PersonIcon />{e.msg}</>
                     }
-                    i += 20
+                    i += 25
                     return <p style={styl}>{msg}</p>
                   })}
                 <div>
                   <input
+
                     placeholder="Type here ..."
                     value={currentMsg}
                     style={{
@@ -251,7 +268,11 @@ const Controls = forwardRef(
                       width: "85%",
                       color: '#777',
                       backgroundColor: "inherit",
+                      borderRadius: "6px",
+                      boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
+                      border: "1px solid #777"
                     }}
+                    onClick={() => console.log()}
                     onChange={(e) => { setTypedMsg(e.target.value) }}
                   >
 
@@ -264,11 +285,13 @@ const Controls = forwardRef(
                     backgroundColor: "inherit",
                   }}
                     onClick={(() => {
-                      sendMsg({
-                        id: localStorage.getItem('email'),
-                        msg: currentMsg
-                      })
-                      setTypedMsg('')
+                      if (currentMsg) {
+                        sendMsg({
+                          id: localStorage.getItem('email'),
+                          msg: currentMsg
+                        })
+                        setTypedMsg('')
+                      }
                     })}
                   />
                 </div>
@@ -314,7 +337,7 @@ const Controls = forwardRef(
             style={{ padding: 16 }}
           >
             <Grid item xs={12}>
-              <PrettoSlider
+              {<PrettoSlider
                 min={0}
                 max={100}
                 ValueLabelComponent={(props) => (
@@ -326,7 +349,7 @@ const Controls = forwardRef(
                 onMouseDown={onSeekMouseDown}
                 onChangeCommitted={onSeekMouseUp}
                 onDuration={onDuration}
-              />
+              />}
             </Grid>
 
             <Grid item>
