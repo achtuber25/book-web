@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -21,6 +21,8 @@ import Popover from "@material-ui/core/Popover";
 import PersonIcon from '@mui/icons-material/Person';
 import TimelapseIcon from '@mui/icons-material/Timelapse';
 import CloseIcon from '@mui/icons-material/Close';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 const useStyles = makeStyles((theme) => ({
   controlsWrapper: {
     visibility: "hidden",
@@ -132,12 +134,14 @@ const Controls = forwardRef(
       chatHistory,
       sliderView,
       setSliderView,
-      isPartnerOnline
+      isPartnerOnline,
     },
     ref
   ) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [isLandscape, setLandscape] = useState(false)
+
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
     };
@@ -149,11 +153,25 @@ const Controls = forwardRef(
     const open = Boolean(anchorEl);
     const id = open ? "simple-popover" : undefined;
     const [currentMsg, setTypedMsg] = useState("")
+    const [isLoader, setIsloader] = useState(false)
 
+    const eleRef = useRef(null);
+
+
+    useEffect(() => {
+      let resizeObserver = new ResizeObserver(() => {
+        if (ref.current.clientHeight < ref.current.clientWidth && ref.current.clientWidth > 500) {
+          setLandscape(true)
+        }
+        else setLandscape(false)
+      });
+      resizeObserver.observe(document.getElementById("togetherPlayer"));
+    })
 
     let i = 0
     return (
-      <div ref={ref} className={classes.controlsWrapper}>
+      <div ref={ref} id="togetherPlayer" className={classes.controlsWrapper}>
+
         <Grid
           container
           direction="column"
@@ -173,30 +191,45 @@ const Controls = forwardRef(
               </Typography> */}
             </Grid>
             <Grid item>
-              <Button
-                onClick={onBookmark}
-                color="primary"
-                style={{
-                  position: "absolute",
-                  left: "0px",
-                  bottom: "120px",
-                  maxWidth: "10px",
-                }}
-                startIcon={<BookmarkIcon style={{ color: "#777" }} />}
-              >
-              </Button>
-              <Button
-                onClick={setSliderView}
-                color="primary"
-                style={{
-                  position: "absolute",
-                  left: "0px",
-                  bottom: "180px",
-                  maxWidth: "10px",
-                }}
-                startIcon={<CloseIcon style={{ color: "#777" }} />}
-              >
-              </Button>
+              {isLandscape && <>
+                {/* <Button
+                  onClick={onBookmark}
+                  color="primary"
+                  style={{
+                    position: "absolute",
+                    left: "0px",
+                    bottom: "35%",
+                    maxWidth: "10px",
+                  }}
+                  startIcon={<BookmarkIcon style={{ color: "#777" }} />}
+                >
+                </Button> */}
+                <Button
+                  onClick={setSliderView}
+                  color="primary"
+                  style={{
+                    position: "absolute",
+                    left: "0px",
+                    bottom: "50%",
+                    maxWidth: "10px",
+                  }}
+                  startIcon={<CloseIcon style={{ color: "#777" }} />}
+                >
+                </Button>
+
+                <Button
+                  onClick={() => { setIsloader(!isLoader) }}
+                  color="primary"
+                  style={{
+                    position: "absolute",
+                    left: "0px",
+                    bottom: "35%",
+                  }}
+                  startIcon={isLoader ? <ArrowCircleLeftIcon style={{ color: "#777" }} fontSize="large" /> : <ArrowCircleRightIcon style={{ color: "#777" }} fontSize="large" />}
+                >
+                </Button>
+              </>
+              }
               <div
                 style={{
                   position: "absolute",
@@ -228,12 +261,12 @@ const Controls = forwardRef(
               >
                 <PersonIcon style={{ color: isPartnerOnline }} /><span style={{ color: "#3f51b5" }}>{pduration}</span>
               </div>
-              <div
+              {isLandscape && <div
                 style={{
                   position: "absolute",
                   right: "10px",
                   top: "15px",
-                  width: "40vw",
+                  width: "30vw",
                   height: "55vh",
                 }}
               >
@@ -265,12 +298,12 @@ const Controls = forwardRef(
                     style={{
                       position: "absolute",
                       bottom: "-25px",
-                      width: "85%",
+                      width: "60%",
                       color: '#777',
                       backgroundColor: "inherit",
                       borderRadius: "6px",
                       boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
-                      border: "1px solid #777"
+                      border: "1px solid #38b6ff"
                     }}
                     onClick={() => console.log()}
                     onChange={(e) => { setTypedMsg(e.target.value) }}
@@ -279,9 +312,9 @@ const Controls = forwardRef(
                   </input>
                   <SendIcon style={{
                     position: "absolute",
-                    right: "0px",
+                    right: "25%",
                     bottom: "-23px",
-                    color: '#777',
+                    color: '#38b6ff',
                     backgroundColor: "inherit",
                   }}
                     onClick={(() => {
@@ -295,9 +328,11 @@ const Controls = forwardRef(
                     })}
                   />
                 </div>
-              </div>
+              </div>}
             </Grid>
           </Grid>
+
+
           {/* <Grid container direction="row" alignItems="center" justify="center">
             <IconButton
               onClick={onRewind}
@@ -329,7 +364,7 @@ const Controls = forwardRef(
             </IconButton>
           </Grid> */}
           {/* bottom controls */}
-          <Grid
+          {isLandscape && <><Grid
             container
             direction="row"
             justify="space-between"
@@ -337,7 +372,7 @@ const Controls = forwardRef(
             style={{ padding: 16 }}
           >
             <Grid item xs={12}>
-              {<PrettoSlider
+              {isLandscape && isLoader && <PrettoSlider
                 min={0}
                 max={100}
                 ValueLabelComponent={(props) => (
@@ -380,6 +415,7 @@ const Controls = forwardRef(
                 </IconButton>
 
                 <Slider
+                  ref={eleRef}
                   min={0}
                   max={100}
                   value={muted ? 0 : volume * 100}
@@ -408,57 +444,60 @@ const Controls = forwardRef(
                 </Button>
               </Grid>
             </Grid>
-
             <Grid item>
-              <Button
-                onClick={handleClick}
-                aria-describedby={id}
-                className={classes.bottomIcons}
-                variant="text"
-              >
-                <Typography>{playbackRate}X</Typography>
-              </Button>
+              <>
+                {/* <Button
+                  onClick={handleClick}
+                  aria-describedby={id}
+                  className={classes.bottomIcons}
+                  variant="text"
+                >
+                  <Typography>{playbackRate}X</Typography>
+                </Button> */}
 
-              <Popover
-                container={ref.current}
-                open={open}
-                id={id}
-                onClose={handleClose}
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                transformOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
-              >
-                <Grid container direction="column-reverse">
-                  {[0.5, 1, 1.5, 2].map((rate) => (
-                    <Button
-                      key={rate}
-                      //   onClick={() => setState({ ...state, playbackRate: rate })}
-                      onClick={() => onPlaybackRateChange(rate)}
-                      variant="text"
-                    >
-                      <Typography
-                        color={rate === playbackRate ? "secondary" : "inherit"}
+                {/* <Popover
+                  container={ref.current}
+                  open={open}
+                  id={id}
+                  onClose={handleClose}
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                  transformOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                  }}
+                >
+                  <Grid container direction="column-reverse">
+                    {[0.5, 1, 1.5, 2].map((rate) => (
+                      <Button
+                        key={rate}
+                        //   onClick={() => setState({ ...state, playbackRate: rate })}
+                        onClick={() => onPlaybackRateChange(rate)}
+                        variant="text"
                       >
-                        {rate}X
-                      </Typography>
-                    </Button>
-                  ))}
-                </Grid>
-              </Popover>
-              <IconButton
+                        <Typography
+                          color={rate === playbackRate ? "secondary" : "inherit"}
+                        >
+                          {rate}X
+                        </Typography>
+                      </Button>
+                    ))}
+                  </Grid>
+                </Popover> */}
+              </>
+              {/* <IconButton
                 onClick={onToggleFullScreen}
                 className={classes.bottomIcons}
               >
                 <FullScreen fontSize="large" />
-              </IconButton>
+              </IconButton> */}
+
             </Grid>
           </Grid>
+          </>}
         </Grid>
       </div >
     );

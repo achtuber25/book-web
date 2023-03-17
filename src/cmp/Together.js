@@ -17,7 +17,6 @@ import screenful from "screenfull";
 import Controls from "./Controls";
 import { db } from './Firebase'
 import { ref, onValue, update } from "firebase/database";
-import { updateFire } from './functions';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -158,6 +157,9 @@ function Together() {
   const [pduration, setPduration] = useState('')
   const [videoUrl, setVideoUrl] = useState("")
   const [chatHistory, setChatHistory] = useState([])
+  const [Flow, setFlow] = useState("Touch me")
+
+  //console.log(ref.current.clientHeight)
 
   const [isPartnerOnline, setPartnerOnline] = useState("")
 
@@ -225,13 +227,7 @@ function Together() {
   };
 
   const handleProgress = (changeState) => {
-    if (count > 3) {
-      controlsRef.current.style.visibility = "hidden";
-      count = 0;
-    }
-    if (controlsRef.current.style.visibility == "visible") {
-      count += 1;
-    }
+
     if (!state.seeking) {
       setState({ ...state, ...changeState });
     }
@@ -270,6 +266,7 @@ function Together() {
   };
 
   const toggleFullScreen = () => {
+    console.log(playerContainerRef.current)
     screenful.toggle(playerContainerRef.current);
   };
 
@@ -362,6 +359,11 @@ function Together() {
 
   const onStart = () => {
     toggleFullScreen()
+    toast.info("Now rotate your mobile ...", {
+      theme: "dark",
+      position: "top-right",
+      autoClose: 2000,
+    });
   }
   const sendMsg = (msg) => {
     setChatHistory(chatHistory.push(msg))
@@ -387,7 +389,7 @@ function Together() {
             ref={playerRef}
             width="100%"
             height="100%"
-            url={"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"}
+            url={videoUrl}
             pip={pip}
             playing={isPlayNow}
             controls={false}
@@ -467,9 +469,23 @@ function Together() {
               </Paper>
             </Grid>
           ))}
+
         </Grid>
         <canvas ref={canvasRef} />
-
+        <div style={{
+          display: "grid",
+        }}>
+          <button
+            style={{
+              color: "#2e0006",
+              border: "1px solid #38b6ff",
+              backgroundColor: "#38b6ff",
+              borderRadius: "10px",
+              height: "30px"
+            }}
+            onClick={onStart}
+          >{Flow}</button>
+        </div>
       </Container>
 
     </Wrapper >
