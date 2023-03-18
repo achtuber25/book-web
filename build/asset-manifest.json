@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/static/css/main.a7e192d2.css",
+    "main.js": "/static/js/main.c863964d.js",
+    "static/js/787.93359fbf.chunk.js": "/static/js/787.93359fbf.chunk.js",
+    "static/media/movie.mp4": "/static/media/movie.9b56cd0f73e3b95ee60f.mp4",
+    "static/media/vanayaLogo.png": "/static/media/vanayaLogo.6a4bb309237382251973.png",
+    "static/media/logo.svg": "/static/media/logo.b4db70931fd855cd6184b214acc2ab9b.svg",
+    "index.html": "/index.html",
+    "main.a7e192d2.css.map": "/static/css/main.a7e192d2.css.map",
+    "main.c863964d.js.map": "/static/js/main.c863964d.js.map",
+    "787.93359fbf.chunk.js.map": "/static/js/787.93359fbf.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a7e192d2.css",
+    "static/js/main.c863964d.js"
+  ]
+}
