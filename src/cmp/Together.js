@@ -18,6 +18,7 @@ import Controls from "./Controls";
 import { db } from './Firebase'
 import { ref, onValue, update } from "firebase/database";
 
+import Movie from "./movie.mp4";
 
 const useStyles = makeStyles((theme) => ({
   playerWrapper: {
@@ -389,7 +390,7 @@ function Together() {
             ref={playerRef}
             width="100%"
             height="100%"
-            url={videoUrl}
+            url={Movie}
             pip={pip}
             playing={isPlayNow}
             controls={false}
@@ -405,13 +406,6 @@ function Together() {
               update(ref(db, `/${localStorage.getItem('email')}`), { isPlay: true })
             }}
             onProgress={handleProgress}
-            config={{
-              file: {
-                attributes: {
-                  crossorigin: "anonymous",
-                },
-              },
-            }}
 
           />
           <Controls
